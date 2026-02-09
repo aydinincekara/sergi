@@ -3,14 +3,27 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Efsaneler Sergisi AR v1.3.0</title>
+    <title>Sanal Sergi v1.4.0</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     
     <style>
       body { margin: 0; font-family: 'Segoe UI', sans-serif; overflow: hidden; background: black; }
 
-      /* --- SAĞ ÜST PANEL (SADELEŞTİRİLMİŞ) --- */
+      /* --- GİRİŞ EKRANI --- */
+      #start-screen {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.95); z-index: 3000;
+        display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;
+      }
+      #start-btn {
+        padding: 15px 60px; font-size: 22px; background: #27ae60; color: white;
+        border: none; border-radius: 50px; cursor: pointer; margin-top: 20px;
+        font-weight: bold; letter-spacing: 1px; box-shadow: 0 0 15px rgba(39, 174, 96, 0.6);
+      }
+      .version-display { margin-top: 15px; color: #888; font-size: 14px; font-family: monospace; }
+
+      /* --- SAĞ ÜST PANEL --- */
       #top-right-panel {
         position: fixed; top: 15px; right: 15px; z-index: 1000;
         display: flex; align-items: center; gap: 8px;
@@ -20,61 +33,48 @@
         border: 1px solid #00ff00; border-radius: 4px; font-weight: bold; font-size: 12px;
       }
       #log-btn {
-        background: rgba(0, 0, 0, 0.6); color: white; border: 1px solid #555; 
-        border-radius: 50%; width: 32px; height: 32px; cursor: pointer; 
-        display: flex; align-items: center; justify-content: center; font-size: 16px;
-        transition: background 0.2s;
+        background: rgba(0, 0, 0, 0.6); color: white; border: 1px solid #777; 
+        border-radius: 50%; width: 36px; height: 36px; cursor: pointer; 
+        display: flex; align-items: center; justify-content: center; font-size: 18px;
       }
-      #log-btn:hover { background: rgba(255, 255, 255, 0.2); }
 
       /* --- LOG PENCERESİ --- */
       #log-modal {
-        position: fixed; top: 60px; right: 15px; width: 280px; max-height: 200px;
-        background: rgba(0, 0, 0, 0.9); z-index: 999;
+        position: fixed; top: 60px; right: 15px; width: 300px; max-height: 250px;
+        background: rgba(0, 0, 0, 0.95); z-index: 999;
         overflow-y: auto; border: 1px solid #444; display: none;
-        color: #0f0; font-family: monospace; font-size: 10px; padding: 10px; border-radius: 5px;
+        color: #0f0; font-family: monospace; font-size: 11px; padding: 10px; border-radius: 5px;
       }
-      .log-entry { border-bottom: 1px solid #333; padding: 3px 0; }
+      .log-entry { border-bottom: 1px solid #333; padding: 4px 0; }
       .log-time { color: #888; margin-right: 5px; }
 
       /* --- YÜKLEME BAR --- */
       #loader-overlay {
-        position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%);
-        width: 60%; z-index: 2000; display: none;
-        text-align: center; background: rgba(0, 0, 0, 0.8); padding: 10px 20px; 
-        border-radius: 20px; border: 1px solid #444;
+        position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+        width: 70%; z-index: 2000; display: none;
+        text-align: center; background: rgba(0, 0, 0, 0.85); padding: 15px; 
+        border-radius: 12px; border: 1px solid #555;
       }
       .progress-container {
-        width: 100%; background-color: #333; border-radius: 5px; margin-top: 5px; height: 6px; overflow: hidden;
+        width: 100%; background-color: #333; border-radius: 10px; margin-top: 8px; height: 10px; overflow: hidden;
       }
       .progress-bar {
-        width: 0%; height: 100%; background-color: #00ff00; transition: width 0.2s;
+        width: 0%; height: 100%; background-color: #e67e22; transition: width 0.3s;
       }
-      .loading-text { color: white; font-size: 12px; }
-
-      /* --- BAŞLANGIÇ EKRANI --- */
-      #start-screen {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.95); z-index: 3000;
-        display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;
-      }
-      #start-btn {
-        padding: 15px 50px; font-size: 18px; background: #27ae60; color: white;
-        border: none; border-radius: 50px; cursor: pointer; margin-top: 20px;
-        font-weight: bold; letter-spacing: 1px;
-      }
+      .loading-text { color: white; font-size: 14px; font-weight: bold; }
     </style>
   </head>
   <body>
 
     <div id="start-screen">
       <h1>SANAL SERGİ</h1>
-      <p style="color: #aaa; font-size: 14px;">Lütfen kameraya izin verin</p>
+      <p style="color: #bbb;">Müzeye Hoş Geldiniz</p>
       <button id="start-btn">BAŞLAT</button>
+      <div class="version-display" id="intro-version">v1.4.0</div>
     </div>
 
     <div id="top-right-panel">
-      <div class="version-tag">v1.3.0</div>
+      <div class="version-tag" id="ui-version">v1.4.0</div>
       <button id="log-btn" title="Logları Göster">📋</button>
     </div>
 
@@ -83,14 +83,15 @@
     </div>
 
     <div id="loader-overlay">
-      <div class="loading-text"><span id="load-name">Medya</span> Yükleniyor... %<span id="load-percent">0</span></div>
+      <div class="loading-text"><span id="load-name">Veri</span> İndiriliyor... <span id="load-percent" style="color:#e67e22">0%</span></div>
       <div class="progress-container">
         <div class="progress-bar" id="load-bar"></div>
       </div>
+      <div style="font-size: 10px; color:#aaa; margin-top:5px;">İnternet hızına göre bekleyiniz.</div>
     </div>
 
     <a-scene 
-      mindar-image="imageTargetSrc: ./konser/targets.mind; maxTrack: 1; filterMinCF:0.0001; filterBeta: 0.001; warmupTolerance: 5; missTolerance: 5" 
+      mindar-image="imageTargetSrc: ./konser/targets.mind; maxTrack: 1; filterMinCF:0.0001; filterBeta: 0.001; warmupTolerance: 5; missTolerance: 10" 
       color-space="sRGB" 
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
@@ -131,93 +132,98 @@
     </a-scene>
 
     <script>
-      // --- VERSİYON GEÇMİŞİ ---
+      // --- VERSİYON YÖNETİMİ ---
+      const APP_VERSION = "v1.4.0";
+      // Ekrana yazdır
+      document.getElementById('intro-version').innerText = APP_VERSION;
+      document.getElementById('ui-version').innerText = APP_VERSION;
+
+      // Geçmiş
       const VERSION_HISTORY = [
-        "v1.3.0: UI Sadeleştirildi (İkon). Geçiş hatası (Video Stuck) düzeltildi.",
-        "v1.2.0: Başlat butonu kilidi eklendi.",
-        "v1.0.0: İlk sürüm."
+        "v1.4.0: Kritik 'Kilitlenme' hatası giderildi. Yüzdelik bar düzeltildi.",
+        "v1.3.0: Arayüz ikonlaştı. Performans artırıldı.",
+        "v1.2.0: Başlat butonu kilidi ve Lazy Load eklendi.",
+        "v1.1.0: Çoklu Sergi Modu (Multi-target) eklendi.",
+        "v1.0.0: Safiye Ayla Prototipi (İlk sürüm)."
       ];
 
+      // --- DEĞİŞKENLER ---
       let isAppStarted = false;
-      const startScreen = document.getElementById('start-screen');
-      const startBtn = document.getElementById('start-btn');
-      
-      // Loglar
       const logContent = document.getElementById('log-content');
       const logModal = document.getElementById('log-modal');
       const logBtn = document.getElementById('log-btn');
-
-      // Loader
+      
       const loaderOverlay = document.getElementById('loader-overlay');
       const loadBar = document.getElementById('load-bar');
       const loadPercent = document.getElementById('load-percent');
       const loadName = document.getElementById('load-name');
 
+      // Log Fonksiyonu
       function addLog(msg) {
         const now = new Date();
-        const time = now.toLocaleTimeString().split(' ')[0]; // Sadece saati al
+        const time = now.toLocaleTimeString().split(' ')[0];
         const div = document.createElement('div');
         div.className = 'log-entry';
         div.innerHTML = `<span class="log-time">${time}</span> ${msg}`;
         logContent.prepend(div);
-        console.log(`[AR] ${msg}`);
       }
 
+      // Geçmişi Loga Ekle
       VERSION_HISTORY.forEach(h => addLog(h));
 
+      // Log Butonu
       logBtn.addEventListener('click', () => {
         logModal.style.display = (logModal.style.display === 'block') ? 'none' : 'block';
       });
 
-      startBtn.addEventListener('click', () => {
+      // --- BAŞLATMA ---
+      document.getElementById('start-btn').addEventListener('click', () => {
         isAppStarted = true;
-        startScreen.style.display = 'none';
-        addLog("Sistem Başlatıldı.");
-        // Ses kilidini aç
+        document.getElementById('start-screen').style.display = 'none';
+        addLog("Sistem Başlatıldı - Kamera Aktif");
+        
+        // Ses İzni
         const dummy = new Audio();
         dummy.play().then(()=>dummy.pause()).catch(()=>{});
       });
 
-      // --- KRİTİK DÜZELTME: SIKI GEÇİŞ KONTROLÜ ---
+      // --- HEDEF YÖNETİMİ (KİLİTLENME ÇÖZÜMÜ) ---
       
-      function stopOtherMedias(exceptId) {
-        const allMedia = document.querySelectorAll('video, audio');
-        allMedia.forEach(media => {
-          if (media.id !== exceptId.replace('#', '')) {
-            media.pause();
-            media.currentTime = 0; // Başa sar ki arkada kalmasın
-          }
-        });
-      }
-
       const targets = document.querySelectorAll('.art-target');
+      let loadingInterval = null; // Global interval değişkeni
 
       targets.forEach(target => {
+        
         target.addEventListener("targetFound", () => {
           if (!isAppStarted) return;
-
+          
           const name = target.getAttribute('data-name');
           const mediaId = target.getAttribute('data-id');
           const srcUrl = target.getAttribute('data-src');
           const media = document.querySelector(mediaId);
 
-          addLog(`Bulundu: ${name}`);
+          addLog(`GÖRÜNTÜ BULUNDU: ${name}`);
 
-          // 1. DİĞER HER ŞEYİ DURDUR (En önemli kısım)
-          stopOtherMedias(mediaId);
+          // ADIM 1: DİĞER HER ŞEYİ DURDUR (ZORUNLU)
+          resetAllMedia(mediaId);
 
-          // 2. Medyayı Yükle/Oynat
+          // ADIM 2: MEDYA İŞLEMLERİ
           if (!media.getAttribute('src')) {
+            // İlk defa yükleniyor
             media.setAttribute('src', srcUrl);
             media.load();
             showLoader(name, true);
-            trackProgress(media);
+            monitorProgress(media);
           } else {
+            // Zaten yüklü mü?
             if (media.readyState >= 3) {
               media.play();
+              addLog(`${name} oynatılıyor.`);
             } else {
+              // Yüklü ama hazır değil (Buffering)
+              media.load(); // Tekrar tetikle
               showLoader(name, true);
-              trackProgress(media);
+              monitorProgress(media);
             }
           }
         });
@@ -225,39 +231,71 @@
         target.addEventListener("targetLost", () => {
           const mediaId = target.getAttribute('data-id');
           const media = document.querySelector(mediaId);
+          
           if (media) {
             media.pause();
-            // Not: currentTime'ı sıfırlamıyoruz, belki geri döner diye.
           }
-          showLoader("", false); // Yükleme barını gizle
+          
+          // Loader'ı kapat ve sayacı temizle
+          showLoader("", false);
+          if (loadingInterval) clearInterval(loadingInterval);
         });
       });
 
-      function showLoader(name, show) {
-        loaderOverlay.style.display = show ? 'block' : 'none';
-        if(show) loadName.innerText = name;
+      // Diğer tüm videoları resetleyen fonksiyon
+      function resetAllMedia(exceptId) {
+        const allMedia = document.querySelectorAll('video, audio');
+        allMedia.forEach(m => {
+          // Eğer bu medya, şu an bulunan hedef değilse
+          if (m.id !== exceptId.replace('#', '')) {
+            m.pause();
+            m.currentTime = 0; // Başa sar
+            m.removeAttribute('src'); // RAM'den düşürmeyi dene (Zorunlu değil ama stabilite artırır)
+            m.load(); // Boş kaynağı yükle
+          }
+        });
       }
 
-      function trackProgress(media) {
-        // Eski interval varsa temizle (Çakışmayı önler)
-        if(media.progressInterval) clearInterval(media.progressInterval);
+      // --- LOADER VE YÜZDE HESAPLAMA (DÜZELTİLDİ) ---
+      
+      function showLoader(name, isVisible) {
+        if (isVisible) {
+          loaderOverlay.style.display = 'block';
+          loadName.innerText = name;
+          loadBar.style.width = '0%';
+          loadPercent.innerText = '0%';
+        } else {
+          loaderOverlay.style.display = 'none';
+        }
+      }
 
-        media.progressInterval = setInterval(() => {
+      function monitorProgress(media) {
+        if (loadingInterval) clearInterval(loadingInterval);
+
+        loadingInterval = setInterval(() => {
+          // Eğer video hazırsa bitir
           if (media.readyState >= 3) {
-            clearInterval(media.progressInterval);
-            showLoader("", false);
-            media.play();
+            clearInterval(loadingInterval);
+            loadBar.style.width = '100%';
+            loadPercent.innerText = '100%';
+            setTimeout(() => { showLoader("", false); media.play(); }, 500);
             return;
           }
 
-          if (media.buffered.length > 0 && media.duration) {
-            const end = media.buffered.end(media.buffered.length - 1);
-            const percent = Math.floor((end / media.duration) * 100);
-            loadBar.style.width = percent + '%';
-            loadPercent.innerText = percent;
+          // Metadata okunmadan süre (duration) Infinity döner, bu yüzden bekliyoruz
+          if (media.duration && isFinite(media.duration) && media.buffered.length > 0) {
+             const end = media.buffered.end(media.buffered.length - 1);
+             const percent = Math.floor((end / media.duration) * 100);
+             
+             loadBar.style.width = percent + '%';
+             loadPercent.innerText = percent + '%';
+          } else {
+             // Henüz bilgi yoksa yapay bir hareket ver (Kullanıcı dondu sanmasın)
+             loadPercent.innerText = "Bağlanıyor...";
           }
-        }, 250);
+        }, 200);
       }
+
     </script>
   </body>
 </html>
