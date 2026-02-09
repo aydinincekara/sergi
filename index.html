@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Efsaneler Konseri AR</title>
+    <title>Efsaneler Konseri (Hızlı Mod)</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     
@@ -14,58 +14,69 @@
         justify-content: center; align-items: center; color: white; text-align: center; font-family: sans-serif;
       }
       #start-btn {
-        padding: 15px 40px; font-size: 18px; background: #d35400;
+        padding: 15px 40px; font-size: 18px; background: #e67e22;
         color: white; border: none; border-radius: 30px; cursor: pointer; margin-top: 20px;
-        box-shadow: 0px 4px 15px rgba(211, 84, 0, 0.5);
       }
-      .loading { font-size: 12px; color: #ccc; margin-top: 10px;}
+      .info { font-size: 14px; margin-top: 10px; opacity: 0.8; }
     </style>
   </head>
   <body>
 
     <div id="ui-overlay">
-      <h1>Efsaneler Geçidi</h1>
-      <p>Kameranızı sanatçıların fotoğraflarına tutun.</p>
-      <button id="start-btn">Konseri Başlat</button>
-      <div class="loading">Kütüphaneler yükleniyor...</div>
+      <h1>Efsaneler Konseri</h1>
+      <p class="info">Düşük internet modu devrede.</p>
+      <button id="start-btn">Başlat</button>
     </div>
 
     <a-scene 
-      mindar-image="imageTargetSrc: ./konser/targets.mind; maxTrack: 2; filterMinCF:0.0001; filterBeta: 0.001;" 
+      mindar-image="imageTargetSrc: ./konser/targets.mind; maxTrack: 1; filterMinCF:0.0001; filterBeta: 0.001;" 
       color-space="sRGB" 
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
       device-orientation-permission-ui="enabled: false">
 
       <a-assets>
-        <audio id="soundOrhan" src="./konser/Hatasiz_Kul_Olmaz-Orhan _Gencebay.mp3" preload="metadata"></audio>
-
-        <video id="vidVeysel" src="./konser/asik_veysel_trt_kara_toprak.mp4" preload="metadata" loop="true" playsinline webkit-playsinline crossorigin="anonymous"></video>
-        
-        <video id="vidBaris" src="./konser/baris_manco_Gulpembe.mp4" preload="metadata" loop="true" playsinline webkit-playsinline crossorigin="anonymous"></video>
-
-        <video id="vidZeki" src="./konser/zeki_muren_Ah_bu_sarkilarin_gozu_kor_olsun.mp4" preload="metadata" loop="true" playsinline webkit-playsinline crossorigin="anonymous"></video>
+        <audio id="soundOrhan" preload="none"></audio>
+        <video id="vidVeysel" preload="none" loop="true" playsinline webkit-playsinline crossorigin="anonymous"></video>
+        <video id="vidBaris" preload="none" loop="true" playsinline webkit-playsinline crossorigin="anonymous"></video>
+        <video id="vidZeki" preload="none" loop="true" playsinline webkit-playsinline crossorigin="anonymous"></video>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <a-entity mindar-image-target="targetIndex: 0" class="art-target" data-type="audio" data-id="#soundOrhan">
-        <a-entity position="0 0 0" animation="property: rotation; to: 0 0 360; dur: 5000; easing: linear; loop: true">
-            <a-ring color="black" radius-inner="0.1" radius-outer="0.5"></a-ring> <a-circle color="#c0392b" radius="0.15"></a-circle> </a-entity>
-        <a-text value="Hatasiz Kul Olmaz" color="white" align="center" position="0 -0.6 0" width="2" bg-color="black"></a-text>
+      <a-entity id="loading-indicator" visible="false">
+         <a-plane color="black" opacity="0.7" width="1" height="0.3"></a-plane>
+         <a-text value="Video Yukleniyor..." align="center" width="2"></a-text>
       </a-entity>
 
-      <a-entity mindar-image-target="targetIndex: 1" class="art-target" data-type="video" data-id="#vidVeysel">
-     
+      <a-entity mindar-image-target="targetIndex: 0" class="art-target" 
+                data-type="audio" 
+                data-id="#soundOrhan" 
+                data-src="./konser/Hatasiz_Kul_Olmaz-Orhan _Gencebay.mp3">
+        <a-entity position="0 0 0" animation="property: rotation; to: 0 0 360; dur: 5000; easing: linear; loop: true">
+            <a-ring color="black" radius-inner="0.1" radius-outer="0.5"></a-ring>
+            <a-circle color="#c0392b" radius="0.15"></a-circle>
+        </a-entity>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 1" class="art-target" 
+                data-type="video" 
+                data-id="#vidVeysel" 
+                data-src="./konser/asik_veysel_trt_kara_toprak.mp4">
         <a-video src="#vidVeysel" position="0 0 0" height="1" width="1"></a-video>
       </a-entity>
 
-      <a-entity mindar-image-target="targetIndex: 2" class="art-target" data-type="video" data-id="#vidBaris">
-     
-        <a-video src="#vidBaris" position="0 0 0" height="1" width="1.3"></a-video> </a-entity>
+      <a-entity mindar-image-target="targetIndex: 2" class="art-target" 
+                data-type="video" 
+                data-id="#vidBaris" 
+                data-src="./konser/baris_manco_Gulpembe.mp4">
+        <a-video src="#vidBaris" position="0 0 0" height="1" width="1.3"></a-video>
+      </a-entity>
 
-      <a-entity mindar-image-target="targetIndex: 3" class="art-target" data-type="video" data-id="#vidZeki">
-   
+      <a-entity mindar-image-target="targetIndex: 3" class="art-target" 
+                data-type="video" 
+                data-id="#vidZeki" 
+                data-src="./konser/zeki_muren_Ah_bu_sarkilarin_gozu_kor_olsun.mp4">
         <a-video src="#vidZeki" position="0 0 0" height="1" width="1"></a-video>
       </a-entity>
 
@@ -74,49 +85,57 @@
     <script>
       const startBtn = document.querySelector('#start-btn');
       const overlay = document.querySelector('#ui-overlay');
-      const allVideos = document.querySelectorAll('video');
-      const allAudios = document.querySelectorAll('audio');
+      const targets = document.querySelectorAll('.art-target');
+      const loadingInd = document.querySelector('#loading-indicator');
 
-      // Başlangıç Butonu
       startBtn.addEventListener('click', () => {
         overlay.style.display = 'none';
-        // Tüm medyaları sessizce başlatıp durdur (Tarayıcı izni için)
-        allVideos.forEach(v => { v.play().then(() => v.pause()).catch(() => {}); v.muted = false; });
-        allAudios.forEach(a => { a.play().then(() => a.pause()).catch(() => {}); });
       });
 
-      // Hedefleri yöneten mantık
-      const targets = document.querySelectorAll('.art-target');
-
       targets.forEach(target => {
+        // HEDEF BULUNDUĞUNDA
         target.addEventListener("targetFound", event => {
-          const type = target.getAttribute('data-type');
           const id = target.getAttribute('data-id');
+          const srcUrl = target.getAttribute('data-src');
           const media = document.querySelector(id);
 
-          // Diğer her şeyi sustur (Müze modu)
-          stopAllMedia(media);
+          // Eğer videonun kaynağı henüz atanmamışsa (İlk kez bakılıyorsa)
+          if (!media.getAttribute('src')) {
+            // Yükleniyor yazısını göster
+            target.appendChild(loadingInd); 
+            loadingInd.setAttribute('visible', true);
+            
+            console.log("Internetten çekiliyor: " + srcUrl);
+            media.setAttribute('src', srcUrl); // İndirmeyi başlat
+            media.load();
+          }
 
-          console.log("Bulunan Sanatçı: " + id);
-          if (media) {
-            media.currentTime = 0;
-            media.play();
+          // Video oynamaya hazır olduğunda (Buffering bittiğinde)
+          media.oncanplay = () => {
+             loadingInd.setAttribute('visible', false); // Yazıyı gizle
+             media.play();
+          };
+
+          // Eğer zaten yüklüyse direkt oynat
+          if (media.readyState >= 3) {
+             loadingInd.setAttribute('visible', false);
+             media.play();
+          } else {
+             media.play(); // Play komutunu önden ver
           }
         });
 
+        // HEDEF KAYBOLDUĞUNDA
         target.addEventListener("targetLost", event => {
           const id = target.getAttribute('data-id');
           const media = document.querySelector(id);
           if (media) {
             media.pause();
+            media.currentTime = 0; // Başa sar (İnternet tasarrufu için akışı kes)
           }
+          loadingInd.setAttribute('visible', false);
         });
       });
-
-      function stopAllMedia(exceptThisOne) {
-        allVideos.forEach(v => { if(v !== exceptThisOne) v.pause(); });
-        allAudios.forEach(a => { if(a !== exceptThisOne) a.pause(); });
-      }
     </script>
   </body>
 </html>
