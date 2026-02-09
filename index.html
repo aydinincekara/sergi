@@ -1,31 +1,93 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
   <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Efsaneler Konseri (Hızlı Mod)</title>
+    <title>Efsaneler Sergisi AR</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     
     <style>
-      #ui-overlay {
+      /* --- UI GENEL STİLLER --- */
+      body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; }
+
+      /* Sağ Üst Panel (Versiyon ve Log Butonu) */
+      #top-right-panel {
+        position: fixed; top: 10px; right: 10px; z-index: 1000;
+        display: flex; align-items: center; gap: 10px;
+        background: rgba(0, 0, 0, 0.6); padding: 5px 10px; border-radius: 8px;
+        color: #00ff00; font-weight: bold; font-size: 14px;
+        border: 1px solid #00ff00;
+      }
+
+      /* Log Butonu */
+      #log-btn {
+        background: none; border: none; color: white; cursor: pointer; font-size: 18px;
+      }
+
+      /* Log Penceresi (Gizli Başlar) */
+      #log-modal {
+        position: fixed; top: 50px; right: 10px; width: 300px; max-height: 200px;
+        background: rgba(0, 0, 0, 0.9); z-index: 999;
+        overflow-y: auto; border: 1px solid #555; display: none;
+        color: #ddd; font-size: 12px; padding: 5px; border-radius: 5px;
+      }
+      #log-table { width: 100%; border-collapse: collapse; }
+      #log-table td { border-bottom: 1px solid #333; padding: 4px; }
+      #log-table td:first-child { color: #aaa; width: 60px; } /* Saat kısmı */
+
+      /* Yükleme Ekranı (Progress Bar) */
+      #loader-overlay {
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        width: 60%; z-index: 2000; display: none; /* Hedef bulununca görünür */
+        text-align: center;
+        background: rgba(0, 0, 0, 0.8); padding: 20px; border-radius: 10px;
+      }
+      .progress-container {
+        width: 100%; background-color: #555; border-radius: 5px; margin-top: 10px; height: 10px;
+      }
+      .progress-bar {
+        width: 0%; height: 100%; background-color: #00ff00; border-radius: 5px;
+        transition: width 0.3s;
+      }
+      .loading-text { color: white; margin-bottom: 5px; font-size: 14px; }
+      .percentage { color: #00ff00; font-weight: bold; }
+
+      /* Başlangıç Ekranı */
+      #start-screen {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.8); z-index: 999;
-        display: flex; flex-direction: column;
-        justify-content: center; align-items: center; color: white; text-align: center; font-family: sans-serif;
+        background: rgba(0,0,0,0.85); z-index: 3000;
+        display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;
       }
       #start-btn {
-        padding: 15px 40px; font-size: 18px; background: #e67e22;
-        color: white; border: none; border-radius: 30px; cursor: pointer; margin-top: 20px;
+        padding: 15px 40px; font-size: 18px; background: #e67e22; color: white;
+        border: none; border-radius: 30px; cursor: pointer; margin-top: 20px;
       }
-      .info { font-size: 14px; margin-top: 10px; opacity: 0.8; }
     </style>
   </head>
   <body>
 
-    <div id="ui-overlay">
-      <h1>Efsaneler Konseri</h1>
-      <p class="info">Düşük internet modu devrede.</p>
-      <button id="start-btn">Başlat</button>
+    <div id="start-screen">
+      <h1>Sanal Sergi</h1>
+      <p>Deneyimi başlatmak için tıklayın</p>
+      <button id="start-btn">BAŞLAT</button>
+    </div>
+
+    <div id="top-right-panel">
+      <span id="version-text">v1.0.0</span>
+      <button id="log-btn" title="Logları Göster">📋</button>
+    </div>
+
+    <div id="log-modal">
+      <table id="log-table">
+        </table>
+    </div>
+
+    <div id="loader-overlay">
+      <div class="loading-text">Video Yükleniyor... <span class="percentage" id="load-percent">0%</span></div>
+      <div class="progress-container">
+        <div class="progress-bar" id="load-bar"></div>
+      </div>
     </div>
 
     <a-scene 
@@ -44,15 +106,8 @@
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <a-entity id="loading-indicator" visible="false">
-         <a-plane color="black" opacity="0.7" width="1" height="0.3"></a-plane>
-         <a-text value="Video Yukleniyor..." align="center" width="2"></a-text>
-      </a-entity>
-
       <a-entity mindar-image-target="targetIndex: 0" class="art-target" 
-                data-type="audio" 
-                data-id="#soundOrhan" 
-                data-src="./konser/Hatasiz_Kul_Olmaz-Orhan _Gencebay.mp3">
+                data-id="#soundOrhan" data-src="./konser/Hatasiz_Kul_Olmaz-Orhan _Gencebay.mp3" data-name="Orhan Gencebay">
         <a-entity position="0 0 0" animation="property: rotation; to: 0 0 360; dur: 5000; easing: linear; loop: true">
             <a-ring color="black" radius-inner="0.1" radius-outer="0.5"></a-ring>
             <a-circle color="#c0392b" radius="0.15"></a-circle>
@@ -60,82 +115,151 @@
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 1" class="art-target" 
-                data-type="video" 
-                data-id="#vidVeysel" 
-                data-src="./konser/asik_veysel_trt_kara_toprak.mp4">
+                data-id="#vidVeysel" data-src="./konser/asik_veysel_trt_kara_toprak.mp4" data-name="Aşık Veysel">
         <a-video src="#vidVeysel" position="0 0 0" height="1" width="1"></a-video>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 2" class="art-target" 
-                data-type="video" 
-                data-id="#vidBaris" 
-                data-src="./konser/baris_manco_Gulpembe.mp4">
+                data-id="#vidBaris" data-src="./konser/baris_manco_Gulpembe.mp4" data-name="Barış Manço">
         <a-video src="#vidBaris" position="0 0 0" height="1" width="1.3"></a-video>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 3" class="art-target" 
-                data-type="video" 
-                data-id="#vidZeki" 
-                data-src="./konser/zeki_muren_Ah_bu_sarkilarin_gozu_kor_olsun.mp4">
+                data-id="#vidZeki" data-src="./konser/zeki_muren_Ah_bu_sarkilarin_gozu_kor_olsun.mp4" data-name="Zeki Müren">
         <a-video src="#vidZeki" position="0 0 0" height="1" width="1"></a-video>
       </a-entity>
 
     </a-scene>
 
     <script>
-      const startBtn = document.querySelector('#start-btn');
-      const overlay = document.querySelector('#ui-overlay');
-      const targets = document.querySelectorAll('.art-target');
-      const loadingInd = document.querySelector('#loading-indicator');
+      // --- VERSİYON YÖNETİMİ ---
+      const CURRENT_VERSION = "v1.0.0"; 
+      document.getElementById('version-text').innerText = CURRENT_VERSION;
 
-      startBtn.addEventListener('click', () => {
-        overlay.style.display = 'none';
+      // --- LOG SİSTEMİ ---
+      const logBtn = document.getElementById('log-btn');
+      const logModal = document.getElementById('log-modal');
+      const logTable = document.getElementById('log-table');
+      let isLogOpen = false;
+
+      function addLog(message) {
+        const now = new Date();
+        const timeStr = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+        const row = `<tr><td>${timeStr}</td><td>${message}</td></tr>`;
+        logTable.innerHTML = row + logTable.innerHTML; // En yeniyi en üste ekle
+        console.log(`[AR LOG] ${message}`);
+      }
+
+      // Log penceresini aç/kapa
+      logBtn.addEventListener('click', () => {
+        isLogOpen = !isLogOpen;
+        logModal.style.display = isLogOpen ? 'block' : 'none';
       });
 
+      addLog("Sistem başlatılıyor... Versiyon: " + CURRENT_VERSION);
+
+      // --- MEDYA ve AR MANTIĞI ---
+      const startBtn = document.querySelector('#start-screen button');
+      const startScreen = document.querySelector('#start-screen');
+      const loaderOverlay = document.getElementById('loader-overlay');
+      const loadBar = document.getElementById('load-bar');
+      const loadPercent = document.getElementById('load-percent');
+      
+      const targets = document.querySelectorAll('.art-target');
+      const allMedia = document.querySelectorAll('video, audio');
+
+      // Başlat Butonu
+      startBtn.addEventListener('click', () => {
+        startScreen.style.display = 'none';
+        addLog("Kullanıcı deneyimi başlattı.");
+        // Ses izni almak için hepsini sessizce oynat/durdur
+        allMedia.forEach(m => { m.muted = false; m.play().then(()=>m.pause()).catch(()=>{}); });
+      });
+
+      // Hedefleri Dinle
       targets.forEach(target => {
-        // HEDEF BULUNDUĞUNDA
-        target.addEventListener("targetFound", event => {
+        target.addEventListener("targetFound", () => {
+          const name = target.getAttribute('data-name');
           const id = target.getAttribute('data-id');
           const srcUrl = target.getAttribute('data-src');
           const media = document.querySelector(id);
 
-          // Eğer videonun kaynağı henüz atanmamışsa (İlk kez bakılıyorsa)
+          addLog(`HEDEF BULUNDU: ${name}`);
+
+          // Diğer medyaları sustur
+          allMedia.forEach(m => { if(m !== media) { m.pause(); m.currentTime=0; } });
+
+          // Video henüz yüklenmediyse kaynağını ata
           if (!media.getAttribute('src')) {
-            // Yükleniyor yazısını göster
-            target.appendChild(loadingInd); 
-            loadingInd.setAttribute('visible', true);
-            
-            console.log("Internetten çekiliyor: " + srcUrl);
-            media.setAttribute('src', srcUrl); // İndirmeyi başlat
+            addLog(`İndirme başlatılıyor: ${name}`);
+            media.setAttribute('src', srcUrl);
             media.load();
-          }
-
-          // Video oynamaya hazır olduğunda (Buffering bittiğinde)
-          media.oncanplay = () => {
-             loadingInd.setAttribute('visible', false); // Yazıyı gizle
-             media.play();
-          };
-
-          // Eğer zaten yüklüyse direkt oynat
-          if (media.readyState >= 3) {
-             loadingInd.setAttribute('visible', false);
-             media.play();
+            showLoader(true); // Yükleme barını göster
+            trackProgress(media); // Yüklemeyi takip et
+          } else if (media.readyState < 3) {
+            // Kaynak var ama hazır değilse
+            showLoader(true);
+            trackProgress(media);
+            media.play();
           } else {
-             media.play(); // Play komutunu önden ver
+            // Zaten hazırsa direkt oynat
+            addLog(`Öbellekten oynatılıyor: ${name}`);
+            media.play();
           }
         });
 
-        // HEDEF KAYBOLDUĞUNDA
-        target.addEventListener("targetLost", event => {
+        target.addEventListener("targetLost", () => {
+          const name = target.getAttribute('data-name');
           const id = target.getAttribute('data-id');
           const media = document.querySelector(id);
-          if (media) {
-            media.pause();
-            media.currentTime = 0; // Başa sar (İnternet tasarrufu için akışı kes)
-          }
-          loadingInd.setAttribute('visible', false);
+          
+          addLog(`Hedef Kayboldu: ${name}`);
+          if(media) media.pause();
+          showLoader(false); // Yükleme barını gizle
         });
       });
+
+      // --- YÜKLEME ÇUBUĞU MANTIĞI ---
+      function showLoader(isVisible) {
+        loaderOverlay.style.display = isVisible ? 'block' : 'none';
+        if(!isVisible) {
+          loadBar.style.width = '0%';
+          loadPercent.innerText = '0%';
+        }
+      }
+
+      function trackProgress(mediaElement) {
+        // Video oynayabilir hale gelince barı gizle
+        mediaElement.oncanplay = () => {
+          addLog("Medya oynatılabilir durumda.");
+          showLoader(false);
+          mediaElement.play();
+        };
+
+        // Yükleme ilerledikçe (Progress Event)
+        mediaElement.ontimeupdate = null; // Eski eventleri temizle
+        
+        const checkProgress = setInterval(() => {
+          if (mediaElement.readyState >= 3) {
+             clearInterval(checkProgress);
+             return;
+          }
+
+          if (mediaElement.buffered.length > 0 && mediaElement.duration) {
+            const bufferedEnd = mediaElement.buffered.end(mediaElement.buffered.length - 1);
+            const duration = mediaElement.duration;
+            const percent = Math.min(100, Math.floor((bufferedEnd / duration) * 100));
+            
+            loadBar.style.width = percent + '%';
+            loadPercent.innerText = percent + '%';
+            
+            // Eğer %90'ı geçtiyse oynat gitsin
+            if (percent > 90) showLoader(false);
+          }
+        }, 500); // Yarım saniyede bir kontrol et
+      }
+
+      addLog("Sistem hazır. Hedef bekleniyor...");
     </script>
   </body>
 </html>
