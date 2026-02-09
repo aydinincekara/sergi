@@ -3,81 +3,79 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Efsaneler Sergisi AR v1.2.0</title>
+    <title>Efsaneler Sergisi AR v1.3.0</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     
     <style>
-      body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; background: black; }
+      body { margin: 0; font-family: 'Segoe UI', sans-serif; overflow: hidden; background: black; }
 
-      /* --- SAĞ ÜST PANEL --- */
+      /* --- SAĞ ÜST PANEL (SADELEŞTİRİLMİŞ) --- */
       #top-right-panel {
-        position: fixed; top: 10px; right: 10px; z-index: 1000;
-        display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
+        position: fixed; top: 15px; right: 15px; z-index: 1000;
+        display: flex; align-items: center; gap: 8px;
       }
       .version-tag {
-        background: rgba(0, 50, 0, 0.8); color: #00ff00; padding: 5px 10px;
-        border: 1px solid #00ff00; border-radius: 5px; font-weight: bold; font-size: 14px;
+        background: rgba(0, 0, 0, 0.6); color: #00ff00; padding: 4px 8px;
+        border: 1px solid #00ff00; border-radius: 4px; font-weight: bold; font-size: 12px;
       }
       #log-btn {
-        background: rgba(255, 255, 255, 0.2); color: white; border: none; 
-        border-radius: 5px; cursor: pointer; padding: 5px 10px; font-size: 12px;
+        background: rgba(0, 0, 0, 0.6); color: white; border: 1px solid #555; 
+        border-radius: 50%; width: 32px; height: 32px; cursor: pointer; 
+        display: flex; align-items: center; justify-content: center; font-size: 16px;
+        transition: background 0.2s;
       }
+      #log-btn:hover { background: rgba(255, 255, 255, 0.2); }
 
       /* --- LOG PENCERESİ --- */
       #log-modal {
-        position: fixed; top: 80px; right: 10px; width: 320px; max-height: 250px;
-        background: rgba(0, 0, 0, 0.95); z-index: 999;
+        position: fixed; top: 60px; right: 15px; width: 280px; max-height: 200px;
+        background: rgba(0, 0, 0, 0.9); z-index: 999;
         overflow-y: auto; border: 1px solid #444; display: none;
-        color: #0f0; font-family: monospace; font-size: 11px; padding: 10px; border-radius: 5px;
-        box-shadow: -5px 5px 15px rgba(0,0,0,0.5);
+        color: #0f0; font-family: monospace; font-size: 10px; padding: 10px; border-radius: 5px;
       }
-      .log-entry { border-bottom: 1px solid #333; padding: 4px 0; }
+      .log-entry { border-bottom: 1px solid #333; padding: 3px 0; }
       .log-time { color: #888; margin-right: 5px; }
 
-      /* --- YÜKLEME EKRANI (PROGRESS) --- */
+      /* --- YÜKLEME BAR --- */
       #loader-overlay {
-        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        width: 70%; z-index: 2000; display: none;
-        text-align: center; background: rgba(20, 20, 20, 0.9); padding: 25px; 
-        border-radius: 12px; border: 1px solid #555;
+        position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%);
+        width: 60%; z-index: 2000; display: none;
+        text-align: center; background: rgba(0, 0, 0, 0.8); padding: 10px 20px; 
+        border-radius: 20px; border: 1px solid #444;
       }
       .progress-container {
-        width: 100%; background-color: #333; border-radius: 10px; margin-top: 15px; height: 12px; overflow: hidden;
+        width: 100%; background-color: #333; border-radius: 5px; margin-top: 5px; height: 6px; overflow: hidden;
       }
       .progress-bar {
-        width: 0%; height: 100%; background-color: #e67e22; transition: width 0.2s;
+        width: 0%; height: 100%; background-color: #00ff00; transition: width 0.2s;
       }
-      .loading-text { color: white; font-size: 16px; font-weight: bold; }
-      .percentage { color: #e67e22; }
+      .loading-text { color: white; font-size: 12px; }
 
       /* --- BAŞLANGIÇ EKRANI --- */
       #start-screen {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.9); z-index: 3000;
+        background: rgba(0,0,0,0.95); z-index: 3000;
         display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;
       }
       #start-btn {
-        padding: 15px 50px; font-size: 20px; background: #27ae60; color: white;
-        border: none; border-radius: 50px; cursor: pointer; margin-top: 30px;
-        box-shadow: 0 0 20px rgba(39, 174, 96, 0.5); font-weight: bold;
-        transition: transform 0.1s;
+        padding: 15px 50px; font-size: 18px; background: #27ae60; color: white;
+        border: none; border-radius: 50px; cursor: pointer; margin-top: 20px;
+        font-weight: bold; letter-spacing: 1px;
       }
-      #start-btn:active { transform: scale(0.95); }
     </style>
   </head>
   <body>
 
     <div id="start-screen">
-      <h1 style="margin-bottom: 5px;">SANAL SERGİ</h1>
-      <p style="color: #bbb; margin-top: 0;">Artırılmış Gerçeklik Deneyimi</p>
+      <h1>SANAL SERGİ</h1>
+      <p style="color: #aaa; font-size: 14px;">Lütfen kameraya izin verin</p>
       <button id="start-btn">BAŞLAT</button>
-      <p style="font-size: 12px; color: #666; margin-top: 50px;">v1.2.0 Stable</p>
     </div>
 
     <div id="top-right-panel">
-      <div class="version-tag">v1.2.0</div>
-      <button id="log-btn">LOGLARI GÖSTER</button>
+      <div class="version-tag">v1.3.0</div>
+      <button id="log-btn" title="Logları Göster">📋</button>
     </div>
 
     <div id="log-modal">
@@ -85,11 +83,10 @@
     </div>
 
     <div id="loader-overlay">
-      <div class="loading-text"><span id="load-name">Medya</span> Yükleniyor... <span class="percentage" id="load-percent">0%</span></div>
+      <div class="loading-text"><span id="load-name">Medya</span> Yükleniyor... %<span id="load-percent">0</span></div>
       <div class="progress-container">
         <div class="progress-bar" id="load-bar"></div>
       </div>
-      <div style="font-size: 11px; color: #aaa; margin-top: 5px;">Lütfen bekleyiniz, internet hızına bağlıdır.</div>
     </div>
 
     <a-scene 
@@ -134,186 +131,133 @@
     </a-scene>
 
     <script>
-      // --- VERSİYON GEÇMİŞİ (Loglarda Görülecek) ---
-      const APP_VERSION = "v1.2.0";
+      // --- VERSİYON GEÇMİŞİ ---
       const VERSION_HISTORY = [
-        "v1.0.0: Safiye Ayla - İlk prototip (Tekli hedef)",
-        "v1.1.0: Efsaneler Sergisi - Çoklu hedef sistemi eklendi (Gallery)",
-        "v1.2.0: Stable - UI/UX Hataları giderildi. Başlat butonu kilidi eklendi. Ses çakışması çözüldü."
+        "v1.3.0: UI Sadeleştirildi (İkon). Geçiş hatası (Video Stuck) düzeltildi.",
+        "v1.2.0: Başlat butonu kilidi eklendi.",
+        "v1.0.0: İlk sürüm."
       ];
 
-      // --- GLOBAL DEĞİŞKENLER ---
-      let isAppStarted = false; // Başlat butonuna basıldı mı?
-      let currentPlayingMedia = null; // Şu an ne çalıyor?
-
-      // UI Elementleri
+      let isAppStarted = false;
       const startScreen = document.getElementById('start-screen');
       const startBtn = document.getElementById('start-btn');
+      
+      // Loglar
       const logContent = document.getElementById('log-content');
       const logModal = document.getElementById('log-modal');
       const logBtn = document.getElementById('log-btn');
-      
+
+      // Loader
       const loaderOverlay = document.getElementById('loader-overlay');
       const loadBar = document.getElementById('load-bar');
       const loadPercent = document.getElementById('load-percent');
       const loadName = document.getElementById('load-name');
 
-      // --- LOG SİSTEMİ ---
       function addLog(msg) {
         const now = new Date();
-        const time = now.toLocaleTimeString();
+        const time = now.toLocaleTimeString().split(' ')[0]; // Sadece saati al
         const div = document.createElement('div');
         div.className = 'log-entry';
-        div.innerHTML = `<span class="log-time">[${time}]</span> ${msg}`;
+        div.innerHTML = `<span class="log-time">${time}</span> ${msg}`;
         logContent.prepend(div);
-        console.log(`[AR-LOG] ${msg}`);
+        console.log(`[AR] ${msg}`);
       }
 
-      // Versiyon geçmişini loga bas
       VERSION_HISTORY.forEach(h => addLog(h));
 
-      // Log penceresini aç/kapa
       logBtn.addEventListener('click', () => {
         logModal.style.display = (logModal.style.display === 'block') ? 'none' : 'block';
       });
 
-      // --- BAŞLAT BUTONU (MASTER SWITCH) ---
       startBtn.addEventListener('click', () => {
         isAppStarted = true;
         startScreen.style.display = 'none';
-        addLog("KULLANICI BAŞLAT BUTONUNA BASTI - AR AKTİF");
-        
-        // Ses motorunu ısıt (iOS fix)
-        // Boş bir ses çalıp durduruyoruz ki tarayıcı ses izni versin
-        const dummyAudio = new Audio();
-        dummyAudio.play().then(() => dummyAudio.pause()).catch(() => {});
+        addLog("Sistem Başlatıldı.");
+        // Ses kilidini aç
+        const dummy = new Audio();
+        dummy.play().then(()=>dummy.pause()).catch(()=>{});
       });
 
-      // --- MEDYA KONTROL MERKEZİ ---
+      // --- KRİTİK DÜZELTME: SIKI GEÇİŞ KONTROLÜ ---
       
-      // Tüm medyaları zorla durduran fonksiyon
-      function stopAllMedia() {
+      function stopOtherMedias(exceptId) {
         const allMedia = document.querySelectorAll('video, audio');
-        allMedia.forEach(m => {
-          m.pause();
-          m.currentTime = 0; // Başa sar
+        allMedia.forEach(media => {
+          if (media.id !== exceptId.replace('#', '')) {
+            media.pause();
+            media.currentTime = 0; // Başa sar ki arkada kalmasın
+          }
         });
-        currentPlayingMedia = null;
-        addLog("Tüm medyalar susturuldu.");
       }
 
-      // --- HEDEF BULMA MANTIĞI ---
       const targets = document.querySelectorAll('.art-target');
 
       targets.forEach(target => {
-        // Hedef Bulundu
         target.addEventListener("targetFound", () => {
+          if (!isAppStarted) return;
+
           const name = target.getAttribute('data-name');
-          
-          // EĞER BUTONA BASILMADIYSA HİÇBİR ŞEY YAPMA!
-          if (!isAppStarted) {
-            console.log("Hedef bulundu ama başlat butonuna basılmadı: " + name);
-            return; 
-          }
-
-          addLog(`GÖRÜNTÜ ALGILANDI: ${name}`);
-
-          // 1. Önce her şeyi sustur (Çakışmayı önle)
-          stopAllMedia();
-
           const mediaId = target.getAttribute('data-id');
           const srcUrl = target.getAttribute('data-src');
           const media = document.querySelector(mediaId);
 
-          // 2. Medyayı Hazırla ve Oynat
-          if (media) {
-            currentPlayingMedia = media;
-            playMediaSafe(media, srcUrl, name);
+          addLog(`Bulundu: ${name}`);
+
+          // 1. DİĞER HER ŞEYİ DURDUR (En önemli kısım)
+          stopOtherMedias(mediaId);
+
+          // 2. Medyayı Yükle/Oynat
+          if (!media.getAttribute('src')) {
+            media.setAttribute('src', srcUrl);
+            media.load();
+            showLoader(name, true);
+            trackProgress(media);
+          } else {
+            if (media.readyState >= 3) {
+              media.play();
+            } else {
+              showLoader(name, true);
+              trackProgress(media);
+            }
           }
         });
 
-        // Hedef Kayboldu
         target.addEventListener("targetLost", () => {
-          const name = target.getAttribute('data-name');
-          addLog(`GÖRÜNTÜ KAYBOLDU: ${name}`);
-          
-          // Yükleme ekranını gizle
-          loaderOverlay.style.display = 'none';
-
-          // Çalanı durdur
           const mediaId = target.getAttribute('data-id');
           const media = document.querySelector(mediaId);
           if (media) {
             media.pause();
+            // Not: currentTime'ı sıfırlamıyoruz, belki geri döner diye.
           }
+          showLoader("", false); // Yükleme barını gizle
         });
       });
 
-      // --- GÜVENLİ OYNATMA VE YÜKLEME TAKİBİ ---
-      function playMediaSafe(media, src, name) {
-        
-        // Eğer kaynak atanmamışsa ata
-        if (!media.getAttribute('src')) {
-          addLog(`${name} internetten indiriliyor...`);
-          media.setAttribute('src', src);
-          media.load();
-        }
-
-        // Eğer video hazır değilse (readyState < 3)
-        if (media.readyState < 3) {
-          loaderOverlay.style.display = 'block';
-          loadName.innerText = name;
-          trackDownloadProgress(media);
-        } else {
-          // Hazırsa direkt oynat
-          addLog(`${name} önbellekten oynatılıyor.`);
-          media.play().catch(e => addLog("Oynatma hatası: " + e));
-        }
-
-        // Oynayabilir hale gelince
-        media.oncanplay = () => {
-          loaderOverlay.style.display = 'none';
-          // Sadece şu anki hedef hala buysa oynat (Kullanıcı kamerayı çevirmiş olabilir)
-          if (currentPlayingMedia === media) {
-             media.play();
-             addLog(`${name} OYNATILIYOR ▶️`);
-          }
-        };
+      function showLoader(name, show) {
+        loaderOverlay.style.display = show ? 'block' : 'none';
+        if(show) loadName.innerText = name;
       }
 
-      // --- YÜZDELİK HESAPLAMA ---
-      function trackDownloadProgress(media) {
-        loadBar.style.width = '0%';
-        loadPercent.innerText = '0%';
+      function trackProgress(media) {
+        // Eski interval varsa temizle (Çakışmayı önler)
+        if(media.progressInterval) clearInterval(media.progressInterval);
 
-        const interval = setInterval(() => {
-          // Eğer medya oynuyorsa veya başka bir hedefe geçildiyse takibi bırak
-          if (media.readyState >= 3 || currentPlayingMedia !== media) {
-            clearInterval(interval);
-            loadBar.style.width = '100%';
-            loadPercent.innerText = '100%';
-            setTimeout(() => { loaderOverlay.style.display = 'none'; }, 500);
+        media.progressInterval = setInterval(() => {
+          if (media.readyState >= 3) {
+            clearInterval(media.progressInterval);
+            showLoader("", false);
+            media.play();
             return;
           }
 
-          // Buffer bilgisini oku
-          if (media.buffered.length > 0) {
-            // Süresi belli değilse tahmini ilerle
-            const duration = media.duration;
-            if (duration > 0) {
-                const bufferedEnd = media.buffered.end(media.buffered.length - 1);
-                const percent = Math.floor((bufferedEnd / duration) * 100);
-                loadBar.style.width = percent + '%';
-                loadPercent.innerText = percent + '%';
-            } else {
-                // Süre alınamıyorsa yapay ilerleme (kullanıcı dondu sanmasın)
-                loadBar.style.width = '50%';
-                loadPercent.innerText = 'Yükleniyor...';
-            }
+          if (media.buffered.length > 0 && media.duration) {
+            const end = media.buffered.end(media.buffered.length - 1);
+            const percent = Math.floor((end / media.duration) * 100);
+            loadBar.style.width = percent + '%';
+            loadPercent.innerText = percent;
           }
-        }, 200);
+        }, 250);
       }
-
     </script>
   </body>
 </html>
